@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EvtSource">
+      <HintPath>..\..\EvtSource\EvtSource\bin\Debug\netstandard2.0\EvtSource.dll</HintPath>
+    </Reference>
     <Reference Include="Kaazing.Chai, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kaazing.Enterprise.5.0.0\lib\netstandard2.0\Kaazing.Chai.dll</HintPath>
     </Reference>
