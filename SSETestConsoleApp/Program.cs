@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using EvtSource;
 
 namespace SSETestConsoleApp
 {
@@ -15,56 +17,27 @@ namespace SSETestConsoleApp
 
         static void Main(string[] args)
         {
-            try
+            string url = _kaazingSSE;
+
+            if (args.Length > 0)
+                url = args[0];
+        
+            var evt = new EventSourceReader(new Uri(url)).Start();
+
+            evt.MessageReceived += (object sender, EventSourceMessageEventArgs e) => {
+                Console.WriteLine($"{e.Message}");
+            };
+            evt.Disconnected += async (object sender, DisconnectEventArgs e) => {
+                Console.WriteLine($"Retry: {e.ReconnectDelay} - Error");
+                await Task.Delay(e.ReconnectDelay);
+                evt.Start(); // Reconnect to the same URL
+            };
+
+            Console.WriteLine($"Opening SSE Stream: {url}");
+            while (true)
             {
-                ProcessKaazingSSE(_kaazingSSE);
+                Thread.Sleep(1000000);
             }
-            catch (Exception ex)
-            {
-                Trace.WriteLine($"----- Ran for {ex}");
-            }
-        }
-
-        static private void ProcessKaazingSSE(string url)
-        {
-            bool exit = false;
-            var eventSource = new Kaazing.HTML5.EventSource();
-
-            eventSource.OpenEvent += new Kaazing.HTML5.OpenEventHandler((object sender, Kaazing.HTML5.OpenEventArgs e) =>
-            {
-                Trace.WriteLine($"EventArgsSource Open {e}");
-            });
-
-            eventSource.MessageEvent += new Kaazing.HTML5.MessageEventHandler((object sender, Kaazing.HTML5.MessageEventArgs e) =>
-            {
-
-                Trace.WriteLine($"EventArgsSource Message {e}");
-            }); ;
-
-            eventSource.ErrorEvent += new Kaazing.HTML5.ErrorEventHandler((object sender, Kaazing.HTML5.ErrorEventArgs e) =>
-            {
-                var evntSrc = sender as Kaazing.HTML5.EventSource;
-                switch(evntSrc.ReadyState)
-                {
-                    case 2://closed
-                        break;
-
-                    case 1://connecting
-                        break;
-                }
-
-                Trace.WriteLine($"EventArgsSource Error {e}");
-                exit = true;
-            });
-
-            eventSource.Connect(url);
-
-            while ( !exit )
-            {
-                int i = 0;
-            }
-
-            eventSource.Disconnect();
         }
     }
 }
