@@ -4,7 +4,7 @@ Simple SSE sample using kaazing nuget package showing ERROR
 # Updates from Kaazing
 
 The existing Kaazing client libraries don't currently support HTTP/2 for Server Sent Events.  We have updated this sample
-to use the EvtSource package (currently compiled locally as it required minor changes) and HTTP/2 support via the WinHttpHandler package from nuget.
+to use the EvtSource package (currently compiled locally as it required minor changes) and HTTP/2 support via the WinHttpHandler package from nuget.  We've testing EvtSource and HTTP/2 with .NET Core 2.0 and .NET Framework 4.7.2 Console applications.
 
 ### First, grab and build EvtSource:
 
@@ -13,8 +13,9 @@ to use the EvtSource package (currently compiled locally as it required minor ch
 * Under "File/Open" select "Project/Solution" to open the .sln file within Visual Studio
     * We used Visual Studio 2019 Preview
 * Under "Project", select "Manage NuGet packages"
-    * Select "Browse", enter "WinHttpHandler"
-    * Select "Install"
+    * If "WinHttpHandler" wasn't installed automatically, then:
+        * Select "Browse", enter "WinHttpHandler"
+        * Select "Install"
 * Build
     * By default, .dll's are built for the various versions of .NET
     * Take note of the location of the .NET standard 2.0 .dll location listed
@@ -25,8 +26,9 @@ to use the EvtSource package (currently compiled locally as it required minor ch
     * If you'd like us to push our changes back to you via a pull request, let us know
 * Under "File/Open" select "Project/Solution" to open the .sln file within Visual Studio
 * Under "Project", select "Manage NuGet packages"
-    * Select "Browse", enter "WinHttpHandler"
-    * Select "Install"
+    * If "WinHttpHandler" wasn't installed automatically, then:
+        * Select "Browse", enter "WinHttpHandler"
+        * Select "Install"
 * May need to add a reference to the EvtSource .dll built earlier
     * The updated .csproj file contains a reference to the .NET Standard 2.0 EvtSource.dll assuming that EvtSource and kaazingtest we in the same directory at the same level.
     * If the reference is incorrect, remove the existing EvtSource reference (right click on EvtSource under Reference in Solutions Explorer)
