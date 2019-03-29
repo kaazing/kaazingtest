@@ -7,7 +7,7 @@ The existing Kaazing client libraries don't currently support HTTP/2 for Server 
 
 We have updated this sample to use two packages from NuGet:
 - 3v.EvtSource package (version 1.1.1 or better)
-- WinHttpHandler package (version 4.6.0 or better)
+- WinHttpHandler package (version 4.5.2 or better)
     - Allows application to specify to use HTTP/2 client
 
 We've tested this updated sample with .NET Core 2.0 and .NET Framework 4.7.2 Console applications.  Built using Visual Studio 2019 on Windows 10.
