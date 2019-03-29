@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using EvtSource;
+using static System.Net.Http.WinHttpHandler;
 
 namespace SSETestConsoleApp
 {
@@ -15,6 +16,19 @@ namespace SSETestConsoleApp
         private static string _coralSSE = "https://cd.push.datafabric.aws.ladbrokescoral.com/sportsbook/categories/21";
         private static string _ladbrokesSSE = "https://ld.push.datafabric.aws.ladbrokescoral.com/sportsbook/categories/21";
 
+        //
+        // Use Microsoft's WinHttpHandler (via nuget) to enable HTTP/2
+        //   - extend SendAsync to set HTTP version
+        //   - pass Http2CustomHandler to instantiation of HttpClient()
+        //
+        public class Http2CustomHandler : WinHttpHandler
+        {
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+            {
+                request.Version = new Version("2.0");
+                return base.SendAsync(request, cancellationToken);
+            }
+        }
         static void Main(string[] args)
         {
             string url = _kaazingSSE;
@@ -22,7 +36,7 @@ namespace SSETestConsoleApp
             if (args.Length > 0)
                 url = args[0];
         
-            var evt = new EventSourceReader(new Uri(url)).Start();
+            var evt = new EventSourceReader(new Uri(url), new Http2CustomHandler()).Start();
 
             evt.MessageReceived += (object sender, EventSourceMessageEventArgs e) => {
                 Console.WriteLine($"{e.Message}");
@@ -36,8 +50,9 @@ namespace SSETestConsoleApp
             Console.WriteLine($"Opening SSE Stream: {url}");
             while (true)
             {
-                Thread.Sleep(1000000);
+                Thread.Sleep(1000);
             }
         }
     }
 }
+
